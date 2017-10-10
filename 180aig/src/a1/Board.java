@@ -2,19 +2,8 @@ package a1;
 
 public class Board {
 	private static Board boardInstance = null;
-	private int[][] positions;
-	
-	//Game Pieces
-	final private int HUMAN_KING = 1;
-	final private int HUMAN_NINJA = 2;
-	final private int HUMAN_SAMURAI = 3;
-	final private int HUMAN_MINI_NINJA = 4;
-	final private int HUMAN_MINI_SAMURAI = 5;
-	final private int COMPUTER_KING = 1;
-	final private int COMPUTER_NINJA = 6;
-	final private int COMPUTER_SAMURAI = 7;
-	final private int COMPUTER_MINI_NINJA = 8;
-	final private int COMPUTER_MINI_SAMURAI = 9;
+	private GamePiece[][] positions;
+
 
 	
 	
@@ -29,19 +18,67 @@ public class Board {
 	}
 	
 	private void initializeBoard() {
-		positions = new int[][] {
-			{0, 0, 0, 1, 0, 0, 0},
-			{6, 6, 6, 0, 7, 7, 7},
-			{9, 9, 9, 0, 8, 8, 8},
-			{0, 0, 0, 0, 0, 0, 0},
-			{0, 0, 0, 0, 0, 0, 0},
-			{4, 4, 4, 0, 5, 5, 5},
-			{3, 3, 3, 0, 2, 2, 2},
-			{0, 0, 0, 1, 0, 0, 0}
+		positions = new GamePiece[][] {
+			{GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.COMPUTER_KING, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE},
+			{GamePiece.COMPUTER_NINJA, 
+				GamePiece.COMPUTER_NINJA, 
+				GamePiece.COMPUTER_NINJA, 
+				GamePiece.NONE, 
+				GamePiece.COMPUTER_SAMURAI, 
+				GamePiece.COMPUTER_SAMURAI, 
+				GamePiece.COMPUTER_SAMURAI},
+			{GamePiece.COMPUTER_MINI_SAMURAI, 
+				GamePiece.COMPUTER_MINI_SAMURAI, 
+				GamePiece.COMPUTER_MINI_SAMURAI, 
+				GamePiece.NONE, 
+				GamePiece.COMPUTER_MINI_NINJA, 
+				GamePiece.COMPUTER_MINI_NINJA, 
+				GamePiece.COMPUTER_MINI_NINJA},
+			{GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE,
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE},
+			{GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE},
+			{GamePiece.HUMAN_MINI_NINJA, 
+				GamePiece.HUMAN_MINI_NINJA, 
+				GamePiece.HUMAN_MINI_NINJA, 
+				GamePiece.NONE, 
+				GamePiece.HUMAN_SAMURAI, 
+				GamePiece.HUMAN_SAMURAI, 
+				GamePiece.HUMAN_SAMURAI},
+			{GamePiece.HUMAN_SAMURAI, 
+				GamePiece.HUMAN_SAMURAI, 
+				GamePiece.HUMAN_SAMURAI,
+				GamePiece.NONE, 
+				GamePiece.HUMAN_NINJA, 
+				GamePiece.HUMAN_NINJA, 
+				GamePiece.HUMAN_NINJA},
+			{GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.HUMAN_KING, 
+				GamePiece.NONE, 
+				GamePiece.NONE, 
+				GamePiece.NONE}
 		};
 	}  //initializeBoard()
 	
-	public int[][] getPositions() {
+	public GamePiece[][] getPositions() {
 		return positions;
 	}
 	
@@ -63,17 +100,17 @@ public class Board {
 				if(i == 6 && j == 0) System.out.print("\t 2 ");
 				if(i == 7 && j == 0) System.out.print("\t 1 ");
 				//prints out the game pieces
-				if(positions[i][j] == 0) System.out.print("   ");
-				if(positions[i][j] == HUMAN_KING  || positions[i][j] == COMPUTER_KING) 
+				if(positions[i][j] == GamePiece.NONE) System.out.print("   ");
+				if(positions[i][j] == GamePiece.HUMAN_KING  || positions[i][j] == GamePiece.COMPUTER_KING) 
 					System.out.print(" K ");
-				if(positions[i][j] == HUMAN_NINJA) System.out.print(" J ");
-				if(positions[i][j] == HUMAN_SAMURAI) System.out.print(" S ");
-				if(positions[i][j] == HUMAN_MINI_NINJA) System.out.print(" j ");
-				if(positions[i][j] == HUMAN_MINI_SAMURAI) System.out.print(" s ");
-				if(positions[i][j] == COMPUTER_NINJA) System.out.print(" J ");
-				if(positions[i][j] == COMPUTER_SAMURAI) System.out.print(" S ");
-				if(positions[i][j] == COMPUTER_MINI_NINJA) System.out.print(" j ");
-				if(positions[i][j] == COMPUTER_MINI_SAMURAI) System.out.print(" s ");
+				if(positions[i][j] == GamePiece.HUMAN_NINJA) System.out.print(" J ");
+				if(positions[i][j] == GamePiece.HUMAN_SAMURAI) System.out.print(" S ");
+				if(positions[i][j] == GamePiece.HUMAN_MINI_NINJA) System.out.print(" j ");
+				if(positions[i][j] == GamePiece.HUMAN_MINI_SAMURAI) System.out.print(" s ");
+				if(positions[i][j] == GamePiece.COMPUTER_NINJA) System.out.print(" J ");
+				if(positions[i][j] == GamePiece.COMPUTER_SAMURAI) System.out.print(" S ");
+				if(positions[i][j] == GamePiece.COMPUTER_MINI_NINJA) System.out.print(" j ");
+				if(positions[i][j] == GamePiece.COMPUTER_MINI_SAMURAI) System.out.print(" s ");
 			}  //for(j)
 			System.out.println(" ");
 		}  //for(i)

@@ -118,127 +118,127 @@ public class Game {
 				for(int j = 0; j < 7; j++) {
 					
 					//checking  possible moves for Human: Mini Ninja
-					if(b.getPositions()[i][j] == HUMAN_MINI_NINJA) {
+					if(b.getPositions()[i][j] == GamePiece.HUMAN_MINI_NINJA) {
 						//check the upper left square
-						if(!(i-1 < 0) && !(j-1 < 0) && b.getPositions()[i-1][j-1] == 0)
+						if(!(i-1 < 0) && !(j-1 < 0) && b.getPositions()[i-1][j-1] == GamePiece.NONE)
 							insertMove(moveString(j, i, j-1, i-1));
 						//check the upper right square
-						if(!(i-1 < 0) && !(j+1 > 6) && b.getPositions()[i-1][j+1] == 0)
+						if(!(i-1 < 0) && !(j+1 > 6) && b.getPositions()[i-1][j+1] == GamePiece.NONE)
 							insertMove(moveString(j, i, j+1, i-1));
 						//check the lower left square and whether it can attack
-						if(!(i+1 > 7) && !(j-1 < 0) && b.getPositions()[i+1][j-1] == 0 &&
-								( b.getPositions()[i][j-1] == COMPUTER_KING || 
-								  b.getPositions()[i][j-1] == COMPUTER_MINI_NINJA ||
-								  b.getPositions()[i][j-1] == COMPUTER_MINI_SAMURAI ||
-								  b.getPositions()[i][j-1] == COMPUTER_NINJA  ||
-								  b.getPositions()[i][j-1] == COMPUTER_SAMURAI ) )
+						if(!(i+1 > 7) && !(j-1 < 0) && b.getPositions()[i+1][j-1] == GamePiece.NONE &&
+								( b.getPositions()[i][j-1] == GamePiece.COMPUTER_KING || 
+								  b.getPositions()[i][j-1] == GamePiece.COMPUTER_MINI_NINJA ||
+								  b.getPositions()[i][j-1] == GamePiece.COMPUTER_MINI_SAMURAI ||
+								  b.getPositions()[i][j-1] == GamePiece.COMPUTER_NINJA  ||
+								  b.getPositions()[i][j-1] == GamePiece.COMPUTER_SAMURAI ) )
 							insertMove(moveString(j, 1, j-1, i+1));
 						//check the lower right square and whether it can attack
-						if(!(i+1 > 7) && !(j+1 > 6) && b.getPositions()[i+1][j+1] == 0 &&
-								( b.getPositions()[i][j+1] == COMPUTER_KING || 
-								  b.getPositions()[i][j+1] == COMPUTER_MINI_NINJA ||
-								  b.getPositions()[i][j+1] == COMPUTER_MINI_SAMURAI ||
-								  b.getPositions()[i][j+1] == COMPUTER_NINJA  ||
-								  b.getPositions()[i][j+1] == COMPUTER_SAMURAI ) )
+						if(!(i+1 > 7) && !(j+1 > 6) && b.getPositions()[i+1][j+1] == GamePiece.NONE &&
+								( b.getPositions()[i][j+1] == GamePiece.COMPUTER_KING || 
+								  b.getPositions()[i][j+1] == GamePiece.COMPUTER_MINI_NINJA ||
+								  b.getPositions()[i][j+1] == GamePiece.COMPUTER_MINI_SAMURAI ||
+								  b.getPositions()[i][j+1] == GamePiece.COMPUTER_NINJA  ||
+								  b.getPositions()[i][j+1] == GamePiece.COMPUTER_SAMURAI ) )
 							insertMove(moveString(j, 1, j+1, i+1));
 					}  //Human: Mini Ninja check
 					
 					//checking  possible moves for Human: Mini Samurai
-					if(b.getPositions()[i][j] == HUMAN_MINI_SAMURAI) {
+					if(b.getPositions()[i][j] == GamePiece.HUMAN_MINI_SAMURAI) {
 						//check the square ahead
-						if(!(i-1 < 0) && b.getPositions()[i-1][j] == 0)
+						if(!(i-1 < 0) && b.getPositions()[i-1][j] == GamePiece.NONE)
 							insertMove(moveString(j, i, j, i-1));
 						//check the left square
-						if(!(j-1 < 0) && b.getPositions()[i][j-1] == 0 &&
-								( b.getPositions()[i-1][j-1] == COMPUTER_KING || 
-								  b.getPositions()[i-1][j-1] == COMPUTER_MINI_NINJA ||
-								  b.getPositions()[i-1][j-1] == COMPUTER_MINI_SAMURAI ||
-								  b.getPositions()[i-1][j-1] == COMPUTER_NINJA  ||
-								  b.getPositions()[i-1][j-1] == COMPUTER_SAMURAI ) )
+						if(!(j-1 < 0) && b.getPositions()[i][j-1] == GamePiece.NONE &&
+								( b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_KING || 
+								  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_MINI_NINJA ||
+								  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_MINI_SAMURAI ||
+								  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_NINJA  ||
+								  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_SAMURAI ) )
 							insertMove(moveString(j, 1, j-1, i));
 						//check the right square
-						if(!(j+1 > 6) && b.getPositions()[i][j+1] == 0 &&
-								( b.getPositions()[i-1][j+1] == COMPUTER_KING || 
-								  b.getPositions()[i-1][j+1] == COMPUTER_MINI_NINJA ||
-								  b.getPositions()[i-1][j+1] == COMPUTER_MINI_SAMURAI ||
-								  b.getPositions()[i-1][j+1] == COMPUTER_NINJA  ||
-								  b.getPositions()[i-1][j+1] == COMPUTER_SAMURAI ) )
+						if(!(j+1 > 6) && b.getPositions()[i][j+1] == GamePiece.NONE &&
+								( b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_KING || 
+								  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_MINI_NINJA ||
+								  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_MINI_SAMURAI ||
+								  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_NINJA  ||
+								  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_SAMURAI ) )
 							insertMove(moveString(j, 1, j+1, i));
 					}  //Human: Mini Samurai check
 					
 					//checking  possible moves for Human: Ninja
-					if(b.getPositions()[i][j] == HUMAN_NINJA) {
+					if(b.getPositions()[i][j] == GamePiece.HUMAN_NINJA) {
 						//check the the upper left squares until something is in its path
 						for(int z = 1; z < 6; z++) {
-							if((i-z < 0) || (j-z < 0) || b.getPositions()[i-z][j-z] != 0)
+							if((i-z < 0) || (j-z < 0) || b.getPositions()[i-z][j-z] != GamePiece.NONE)
 								break;
-							else if(!(i-z < 0) && !(j-z < 0) && b.getPositions()[i-z][j-z] == 0)
+							else if(!(i-z < 0) && !(j-z < 0) && b.getPositions()[i-z][j-z] == GamePiece.NONE)
 								insertMove(moveString(j, i, j-z, i-z));
 						}  //for: upper left
 						//check the upper right squares until something is in its path
 						for(int z = 1; z < 6; z++) {
-							if((i-z < 0) || (j+z > 6) || b.getPositions()[i-z][j] != 0)
+							if((i-z < 0) || (j+z > 6) || b.getPositions()[i-z][j] != GamePiece.NONE)
 								break;
-							if(b.getPositions()[i+z][j+z] == 0 && !(i-z < 0) && !(j+z > 6))
+							if(b.getPositions()[i+z][j+z] == GamePiece.NONE && !(i-z < 0) && !(j+z > 6))
 								insertMove(moveString(j, i, j+z, i-z));
 						}  //for: upper right
 						//check the lower left squares until something is in its path and whether it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i+z > 7) || (j-z < 0) || b.getPositions()[i+z][j-z] != 0)
+							if((i+z > 7) || (j-z < 0) || b.getPositions()[i+z][j-z] != GamePiece.NONE)
 								break;
-							else if(!(i+z > 7) && !(j-z < 0) && b.getPositions()[i+z][j-z] == 0 &&
-									( b.getPositions()[i+z-1][j-z] == COMPUTER_KING || 
-									  b.getPositions()[i+z-1][j-z] == COMPUTER_MINI_NINJA ||
-									  b.getPositions()[i+z-1][j-z] == COMPUTER_MINI_SAMURAI ||
-									  b.getPositions()[i+z-1][j-z] == COMPUTER_NINJA  ||
-									  b.getPositions()[i+z-1][j-z] == COMPUTER_SAMURAI ) )
+							else if(!(i+z > 7) && !(j-z < 0) && b.getPositions()[i+z][j-z] == GamePiece.NONE &&
+									( b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_KING || 
+									  b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_MINI_NINJA ||
+									  b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_MINI_SAMURAI ||
+									  b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_NINJA  ||
+									  b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_SAMURAI ) )
 								insertMove(moveString(j, i, j-z, i+z));
 						}  //for: lower left
 						//check the lower right squares until something is in its path and whether it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i+z > 7) || (j+z > 6) || b.getPositions()[i+z][j-z] != 0)
+							if((i+z > 7) || (j+z > 6) || b.getPositions()[i+z][j-z] != GamePiece.NONE)
 								break;
-							else if(!(i+z > 7) && !(j+z > 6) && b.getPositions()[i+z][j+z] == 0 &&
-									( b.getPositions()[i+z-1][j+z] == COMPUTER_KING || 
-									  b.getPositions()[i+z-1][j+z] == COMPUTER_MINI_NINJA ||
-									  b.getPositions()[i+z-1][j+z] == COMPUTER_MINI_SAMURAI ||
-									  b.getPositions()[i+z-1][j+z] == COMPUTER_NINJA  ||
-									  b.getPositions()[i+z-1][j+z] == COMPUTER_SAMURAI ) )
+							else if(!(i+z > 7) && !(j+z > 6) && b.getPositions()[i+z][j+z] == GamePiece.NONE &&
+									( b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_KING || 
+									  b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_MINI_NINJA ||
+									  b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_MINI_SAMURAI ||
+									  b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_NINJA  ||
+									  b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_SAMURAI ) )
 								insertMove(moveString(j, i, j+z, i+z));
 						}  //for: lower right
 					}  //Human: Ninja check
 					
 					//checking  possible moves for Human: Samurai
-					if(b.getPositions()[i][j] == HUMAN_SAMURAI) {
+					if(b.getPositions()[i][j] == GamePiece.HUMAN_SAMURAI) {
 						//check the forward squares
 						for(int z = 1; z < 6; z++) {
-							if((i-z <0) || b.getPositions()[i-z][j] != 0)
+							if((i-z <0) || b.getPositions()[i-z][j] != GamePiece.NONE)
 								break;
-							if(!(i-1 < 0) && b.getPositions()[i-z][j] == 0)
+							if(!(i-1 < 0) && b.getPositions()[i-z][j] == GamePiece.NONE)
 								insertMove(moveString(j, i, j, i-z));
 						}  //for: forward squares
 						//check the left squares until something is in its path and whther it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i-1 < 0) || (j-z < 0) || b.getPositions()[i][j-z] != 0)
+							if((i-1 < 0) || (j-z < 0) || b.getPositions()[i][j-z] != GamePiece.NONE)
 								break;
-							else if(!(j-z < 0) && b.getPositions()[i][j-z] == 0 &&
-									( b.getPositions()[i-1][j-z] == COMPUTER_KING || 
-									  b.getPositions()[i-1][j-z] == COMPUTER_MINI_NINJA ||
-									  b.getPositions()[i-1][j-z] == COMPUTER_MINI_SAMURAI ||
-									  b.getPositions()[i-1][j-z] == COMPUTER_NINJA  ||
-									  b.getPositions()[i-1][j-z] == COMPUTER_SAMURAI ) )
+							else if(!(j-z < 0) && b.getPositions()[i][j-z] == GamePiece.NONE &&
+									( b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_KING || 
+									  b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_MINI_NINJA ||
+									  b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_MINI_SAMURAI ||
+									  b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_NINJA  ||
+									  b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_SAMURAI ) )
 								insertMove(moveString(j, i, j-z, i));
 						}  //for: left
 						//check the right squares until something is in its path and whether it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i-1 < 0) || (j+z > 6) || b.getPositions()[i][j+z] != 0)
+							if((i-1 < 0) || (j+z > 6) || b.getPositions()[i][j+z] != GamePiece.NONE)
 								break;
-							else if(!(j+z > 6) && b.getPositions()[i][j+z] == 0 &&
-									( b.getPositions()[i-1][j+z] == COMPUTER_KING || 
-									  b.getPositions()[i-1][j+z] == COMPUTER_MINI_NINJA ||
-									  b.getPositions()[i-1][j+z] == COMPUTER_MINI_SAMURAI ||
-									  b.getPositions()[i-1][j+z] == COMPUTER_NINJA  ||
-									  b.getPositions()[i-1][j+z] == COMPUTER_SAMURAI ) )
+							else if(!(j+z > 6) && b.getPositions()[i][j+z] == GamePiece.NONE &&
+									( b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_KING || 
+									  b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_MINI_NINJA ||
+									  b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_MINI_SAMURAI ||
+									  b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_NINJA  ||
+									  b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_SAMURAI ) )
 								insertMove(moveString(j, i, j+z, i));
 						}  //for: left
 					}  //Human: Samurai check
@@ -251,129 +251,129 @@ public class Game {
 				for(int j = 0; j < 7; j++) {
 					
 					//checking  possible moves for Computer: Mini Ninja
-					if(b.getPositions()[i][j] == COMPUTER_MINI_NINJA) {
+					if(b.getPositions()[i][j] == GamePiece.COMPUTER_MINI_NINJA) {
 						//check the lower left square
-						if(!(i+1 > 7) && !(j-1 < 0) && b.getPositions()[i+1][j-1] == 0)
+						if(!(i+1 > 7) && !(j-1 < 0) && b.getPositions()[i+1][j-1] == GamePiece.NONE)
 							insertMove(moveString(j, i, j-1, i+1));
 						//check the lower right square
-						if(!(i+1 > 7) && !(j+1 > 6) && b.getPositions()[i+1][j+1] == 0)
+						if(!(i+1 > 7) && !(j+1 > 6) && b.getPositions()[i+1][j+1] == GamePiece.NONE)
 							insertMove(moveString(j, i, j+1, i+1));
 						//check the lower left square and whether it can attack
-						if(!(i-1 > 7) && !(j-1 < 0) && b.getPositions()[i-1][j-1] == 0 &&
-								( b.getPositions()[i][j-1] == HUMAN_KING || 
-								  b.getPositions()[i][j-1] == HUMAN_MINI_NINJA ||
-								  b.getPositions()[i][j-1] == HUMAN_MINI_SAMURAI ||
-								  b.getPositions()[i][j-1] == HUMAN_NINJA  ||
-								  b.getPositions()[i][j-1] == HUMAN_SAMURAI ) )
+						if(!(i-1 > 7) && !(j-1 < 0) && b.getPositions()[i-1][j-1] == GamePiece.NONE &&
+								( b.getPositions()[i][j-1] == GamePiece.HUMAN_KING || 
+								  b.getPositions()[i][j-1] == GamePiece.HUMAN_MINI_NINJA ||
+								  b.getPositions()[i][j-1] == GamePiece.HUMAN_MINI_SAMURAI ||
+								  b.getPositions()[i][j-1] == GamePiece.HUMAN_NINJA  ||
+								  b.getPositions()[i][j-1] == GamePiece.HUMAN_SAMURAI ) )
 							insertMove(moveString(j, 1, j-1, i-1));
 						//check the lower right square and whether it can attack
-						if(!(i-1 > 7) && !(j+1 > 6) && b.getPositions()[i-1][j+1] == 0 &&
-								( b.getPositions()[i][j+1] == HUMAN_KING || 
-								  b.getPositions()[i][j+1] == HUMAN_MINI_NINJA ||
-								  b.getPositions()[i][j+1] == HUMAN_MINI_SAMURAI ||
-								  b.getPositions()[i][j+1] == HUMAN_NINJA  ||
-								  b.getPositions()[i][j+1] == HUMAN_SAMURAI ) )
+						if(!(i-1 > 7) && !(j+1 > 6) && b.getPositions()[i-1][j+1] == GamePiece.NONE &&
+								( b.getPositions()[i][j+1] == GamePiece.HUMAN_KING || 
+								  b.getPositions()[i][j+1] == GamePiece.HUMAN_MINI_NINJA ||
+								  b.getPositions()[i][j+1] == GamePiece.HUMAN_MINI_SAMURAI ||
+								  b.getPositions()[i][j+1] == GamePiece.HUMAN_NINJA  ||
+								  b.getPositions()[i][j+1] == GamePiece.HUMAN_SAMURAI ) )
 							insertMove(moveString(j, 1, j+1, i-1));
 					}  //Computer: Mini Ninja check
 					
 					//checking  possible moves for Computer: Mini Samurai
-					if(b.getPositions()[i][j] == COMPUTER_MINI_SAMURAI) {
+					if(b.getPositions()[i][j] == GamePiece.COMPUTER_MINI_SAMURAI) {
 						//check the square below
-						if(!(i+1 > 7) && b.getPositions()[i+1][j] == 0)
+						if(!(i+1 > 7) && b.getPositions()[i+1][j] == GamePiece.NONE)
 							insertMove(moveString(j, i, j, i+1));
 						//check left square and whether it can attack
-						if(!(j-1 < 0) && b.getPositions()[i][j-1] == 0 &&
-								( b.getPositions()[i+1][j-1] == HUMAN_KING || 
-								  b.getPositions()[i+1][j-1] == HUMAN_MINI_NINJA ||
-								  b.getPositions()[i+1][j-1] == HUMAN_MINI_SAMURAI ||
-								  b.getPositions()[i+1][j-1] == HUMAN_NINJA  ||
-								  b.getPositions()[i+1][j-1] == HUMAN_SAMURAI ) )
+						if(!(j-1 < 0) && b.getPositions()[i][j-1] == GamePiece.NONE &&
+								( b.getPositions()[i+1][j-1] == GamePiece.HUMAN_KING || 
+								  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_MINI_NINJA ||
+								  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_MINI_SAMURAI ||
+								  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_NINJA  ||
+								  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_SAMURAI ) )
 							insertMove(moveString(j, 1, j-1, i));
 						//check the right square and whether it can attack
-						if(!(j+1 > 6) && b.getPositions()[i][j+1] == 0 &&
-								( b.getPositions()[i+1][j+1] == HUMAN_KING || 
-								  b.getPositions()[i+1][j+1] == HUMAN_MINI_NINJA ||
-								  b.getPositions()[i+1][j+1] == HUMAN_MINI_SAMURAI ||
-								  b.getPositions()[i+1][j+1] == HUMAN_NINJA  ||
-								  b.getPositions()[i+1][j+1] == HUMAN_SAMURAI ) )
+						if(!(j+1 > 6) && b.getPositions()[i][j+1] == GamePiece.NONE &&
+								( b.getPositions()[i+1][j+1] == GamePiece.HUMAN_KING || 
+								  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_MINI_NINJA ||
+								  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_MINI_SAMURAI ||
+								  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_NINJA  ||
+								  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_SAMURAI ) )
 							insertMove(moveString(j, 1, j+1, i));
 					}  //Computer: Mini Samurai check
 					
 					//checking  possible moves for Computer: Ninja
-					if(b.getPositions()[i][j] == COMPUTER_NINJA) {
+					if(b.getPositions()[i][j] == GamePiece.COMPUTER_NINJA) {
 						//check the the lower left squares until something is in path
 						for(int z = 1; z < 6; z++) {
-							if((i+z > 6) || (j-z < 0) || b.getPositions()[i+z][j-z] != 0)
+							if((i+z > 6) || (j-z < 0) || b.getPositions()[i+z][j-z] != GamePiece.NONE)
 								break;
-							else if(!(i+z > 7) && !(j-z < 0) && b.getPositions()[i+z][j-z] == 0)
+							else if(!(i+z > 7) && !(j-z < 0) && b.getPositions()[i+z][j-z] == GamePiece.NONE)
 								insertMove(moveString(j, i, j-z, i+z));
 						}  //for
 						//check the lower right squares until something is in path
 						for(int z = 1; z < 6; z++) {
-							if((i+z > 6) || (j+z > 6) || b.getPositions()[i+z][j+z] != 0)
+							if((i+z > 6) || (j+z > 6) || b.getPositions()[i+z][j+z] != GamePiece.NONE)
 								break;
-							if(b.getPositions()[i+z][j+z] == 0 && !(i+z < 0) && !(j+z > 6))
+							if(b.getPositions()[i+z][j+z] == GamePiece.NONE && !(i+z < 0) && !(j+z > 6))
 								insertMove(moveString(j, i, j+z, i+z));
 						}  //for
 						//check the upper left squares until something is in its path
 						//and whether it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i-z < 0) || (j-z < 0) || b.getPositions()[i-z][j-z] != 0)
+							if((i-z < 0) || (j-z < 0) || b.getPositions()[i-z][j-z] != GamePiece.NONE)
 								break;
-							else if(!(i-z < 0) && !(j-z < 0) && b.getPositions()[i-z][j-z] == 0 &&
-									( b.getPositions()[i-z+1][j-z] == HUMAN_KING || 
-									  b.getPositions()[i-z+1][j-z] == HUMAN_MINI_NINJA ||
-									  b.getPositions()[i-z+1][j-z] == HUMAN_MINI_SAMURAI ||
-									  b.getPositions()[i-z+1][j-z] == HUMAN_NINJA  ||
-									  b.getPositions()[i-z+1][j-z] == HUMAN_SAMURAI ) )
+							else if(!(i-z < 0) && !(j-z < 0) && b.getPositions()[i-z][j-z] == GamePiece.NONE &&
+									( b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_KING || 
+									  b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_MINI_NINJA ||
+									  b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_MINI_SAMURAI ||
+									  b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_NINJA  ||
+									  b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_SAMURAI ) )
 								insertMove(moveString(j, i, j-z, i-z));
 						}  //for: upper left
 						//check the upper right squares until something is in its path
 						//and whether it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i+z > 7) || (j-z < 0) || b.getPositions()[i+z][j-z] != 0)
+							if((i+z > 7) || (j-z < 0) || b.getPositions()[i+z][j-z] != GamePiece.NONE)
 								break;
-							else if(!(i+z > 7) && !(j+z > 6) && b.getPositions()[i+z][j+z] == 0 &&
-									( b.getPositions()[i-z+1][j+z] == HUMAN_KING || 
-									  b.getPositions()[i-z+1][j+z] == HUMAN_MINI_NINJA ||
-									  b.getPositions()[i-z+1][j+z] == HUMAN_MINI_SAMURAI ||
-									  b.getPositions()[i-z+1][j+z] == HUMAN_NINJA  ||
-									  b.getPositions()[i-z+1][j+z] == HUMAN_SAMURAI ) )
+							else if(!(i+z > 7) && !(j+z > 6) && b.getPositions()[i+z][j+z] == GamePiece.NONE &&
+									( b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_KING || 
+									  b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_MINI_NINJA ||
+									  b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_MINI_SAMURAI ||
+									  b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_NINJA  ||
+									  b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_SAMURAI ) )
 								insertMove(moveString(j, i, j+z, i-z));
 						}  //for: upper right
 					}  //Computer: Ninja check
 					
 					//checking  possible moves for Computer: Samurai
-					if(b.getPositions()[i][j] == COMPUTER_SAMURAI) {
+					if(b.getPositions()[i][j] == GamePiece.COMPUTER_SAMURAI) {
 						//check the squares ahead
 						for(int z = 1; z < 6; z++) {
-							if((i+z > 7) || b.getPositions()[i+z][j] != 0)
+							if((i+z > 7) || b.getPositions()[i+z][j] != GamePiece.NONE)
 								break;
-							if(!(i+z > 7) && b.getPositions()[i+z][j] == 0)
+							if(!(i+z > 7) && b.getPositions()[i+z][j] == GamePiece.NONE)
 								insertMove(moveString(j, i, j, i+z));
 						}  //for
 						//check the left squares until something is in its path and whther it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i+1 > 7) || (j-z < 0) || b.getPositions()[i][j-z] != 0)
+							if((i+1 > 7) || (j-z < 0) || b.getPositions()[i][j-z] != GamePiece.NONE)
 								break;
-							else if(!(j-z < 0) && b.getPositions()[i][j-z] == 0 &&
-									( b.getPositions()[i+1][j-z] == HUMAN_KING || 
-									  b.getPositions()[i+1][j-z] == HUMAN_MINI_NINJA ||
-									  b.getPositions()[i+1][j-z] == HUMAN_MINI_SAMURAI ||
-									  b.getPositions()[i+1][j-z] == HUMAN_NINJA  ||
-									  b.getPositions()[i+1][j-z] == HUMAN_SAMURAI ) )
+							else if(!(j-z < 0) && b.getPositions()[i][j-z] == GamePiece.NONE &&
+									( b.getPositions()[i+1][j-z] == GamePiece.HUMAN_KING || 
+									  b.getPositions()[i+1][j-z] == GamePiece.HUMAN_MINI_NINJA ||
+									  b.getPositions()[i+1][j-z] == GamePiece.HUMAN_MINI_SAMURAI ||
+									  b.getPositions()[i+1][j-z] == GamePiece.HUMAN_NINJA  ||
+									  b.getPositions()[i+1][j-z] == GamePiece.HUMAN_SAMURAI ) )
 								insertMove(moveString(j, i, j-z, i));
 						}  //for: left
 						//check the right squares until something is in its path and whether it can attack
 						for(int z = 1; z < 6; z++) {
-							if((i+1 > 7) || (j+z > 6) || b.getPositions()[i][j+z] != 0)
+							if((i+1 > 7) || (j+z > 6) || b.getPositions()[i][j+z] != GamePiece.NONE)
 								break;
-							else if(!(j+z > 6) && b.getPositions()[i][j+z] == 0 &&
-									( b.getPositions()[i+1][j+z] == HUMAN_KING || 
-									  b.getPositions()[i+1][j+z] == HUMAN_MINI_NINJA ||
-									  b.getPositions()[i+1][j+z] == HUMAN_MINI_SAMURAI ||
-									  b.getPositions()[i+1][j+z] == HUMAN_NINJA  ||
-									  b.getPositions()[i+1][j+z] == HUMAN_SAMURAI ) )
+							else if(!(j+z > 6) && b.getPositions()[i][j+z] == GamePiece.NONE &&
+									( b.getPositions()[i+1][j+z] == GamePiece.HUMAN_KING || 
+									  b.getPositions()[i+1][j+z] == GamePiece.HUMAN_MINI_NINJA ||
+									  b.getPositions()[i+1][j+z] == GamePiece.HUMAN_MINI_SAMURAI ||
+									  b.getPositions()[i+1][j+z] == GamePiece.HUMAN_NINJA  ||
+									  b.getPositions()[i+1][j+z] == GamePiece.HUMAN_SAMURAI ) )
 								insertMove(moveString(j, i, j+z, i));
 						}  //for: left
 					}  //Computer: Samurai check
