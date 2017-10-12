@@ -15,25 +15,7 @@ public class Game {
 	//Constants
 	final private int HUMAN = 111;
 	final private int COMPUTER = 222;
-	final private int A = 0;
-	final private int B = 1;
-	final private int C = 2;
-	final private int D = 3;
-	final private int E = 4;
-	final private int F = 5;
-	final private int G = 6;
-	//Game Pieces
-	final private int HUMAN_KING = 1;
-	final private int HUMAN_NINJA = 2;
-	final private int HUMAN_SAMURAI = 3;
-	final private int HUMAN_MINI_NINJA = 4;
-	final private int HUMAN_MINI_SAMURAI = 5;
-	final private int COMPUTER_KING = 1;
-	final private int COMPUTER_NINJA = 6;
-	final private int COMPUTER_SAMURAI = 7;
-	final private int COMPUTER_MINI_NINJA = 8;
-	final private int COMPUTER_MINI_SAMURAI = 9;
-	
+
 	public Game() {
 		board =  board.createBoard();
 		scan = new Scanner(System.in);
