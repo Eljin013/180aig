@@ -399,6 +399,10 @@ public class Game {
 	}  //moveString
 	
 	private boolean isValid(String m) {
+		for(String pMove: moveList) {
+			if(pMove.equalsIgnoreCase(m))
+				return true;
+		}
 		return false;
 	}
 	
