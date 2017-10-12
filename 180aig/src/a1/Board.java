@@ -11,7 +11,7 @@ public class Board {
 		initializeBoard();
 	}
 	
-	public static Board createBoard() {
+	public static Board getInstance() {
 		if(boardInstance == null)
 			boardInstance = new Board();
 		return boardInstance;
@@ -58,9 +58,9 @@ public class Board {
 				GamePiece.HUMAN_MINI_NINJA, 
 				GamePiece.HUMAN_MINI_NINJA, 
 				GamePiece.NONE, 
-				GamePiece.HUMAN_SAMURAI, 
-				GamePiece.HUMAN_SAMURAI, 
-				GamePiece.HUMAN_SAMURAI},
+				GamePiece.HUMAN_MINI_SAMURAI, 
+				GamePiece.HUMAN_MINI_SAMURAI, 
+				GamePiece.HUMAN_MINI_SAMURAI},
 			{GamePiece.HUMAN_SAMURAI, 
 				GamePiece.HUMAN_SAMURAI, 
 				GamePiece.HUMAN_SAMURAI,

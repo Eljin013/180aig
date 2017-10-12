@@ -17,18 +17,18 @@ public class Game {
 	final private int COMPUTER = 222;
 
 	public Game() {
-		board =  board.createBoard();
+		board = Board.getInstance();
 		scan = new Scanner(System.in);
 		runGameLoop(board);
 	}
 	
 	private void runGameLoop(Board b) {
-		System.out.println("Hello! My name is Scruffles, the Master of Karate Chops!");
+		System.out.println("\tHello! My name is Scruffles, the Master of Karate Chops!");
 		askPlayer();
-		
+		b.displayBoard();
 		for(int i = 0; i < 1; i++) {
 			if(!humanFirst) {
-				System.out.println("Round " + (i+1));
+				System.out.println("\t\tRound " + (i+1));
 				moveGenerator(b, COMPUTER);
 				computerTurn(b);
 				isGameOver(b, COMPUTER);
@@ -37,7 +37,7 @@ public class Game {
 				isGameOver(b, HUMAN);
 			}  //if
 			else {
-				System.out.println("Round " + (i+1));
+				System.out.println("\t\tRound " + (i+1));
 				moveGenerator(b, HUMAN);
 				humanTurn(b);
 				isGameOver(b, HUMAN);
@@ -49,7 +49,7 @@ public class Game {
 	}
 	
 	public void askPlayer() {
-		System.out.println("Care to test your might first [1] or second [2]?");
+		System.out.println("\tCare to test your might first [1] or second [2]?");
 
 		int input = scan.nextInt();
 		if(input ==1)
@@ -61,10 +61,19 @@ public class Game {
 	private void humanTurn(Board b) {
 		System.out.println("It's the human's turn.");
 		//display the possible moves
-		for(String move : moveList) {
-			System.out.println("\t" + move);
-		}  //for
+		outputPossMoves(HUMAN);
 		//Human takes turn
+		String input;
+		do{
+			System.out.println("\tGo ahead.  Make a move.");
+			input = scan.next();
+			makeUppercase(input);
+		}while(!isValid(input));
+
+		
+//		int[] comInput = parseInput(input);
+
+		
 		//update the board
 		b.updateBoard();
 
@@ -76,9 +85,8 @@ public class Game {
 	private void computerTurn(Board b) {
 		System.out.println("It's the computer's turn.");
 		//display the possible moves
-		for(String move : moveList) {
-			System.out.println("\t" + move);
-		}  //for
+		outputPossMoves(COMPUTER);
+
 		//Computer takes turn
 		//update the board
 		b.updateBoard();
@@ -94,7 +102,7 @@ public class Game {
 
 
 	private ArrayList<String> moveGenerator(Board b, int p) {
-		
+		//Generates the moves only for the Human player
 		if(p == HUMAN) {
 			for(int i = 0; i < 8; i++) {
 				for(int j = 0; j < 7; j++) {
@@ -114,7 +122,7 @@ public class Game {
 								  b.getPositions()[i][j-1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i][j-1] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i][j-1] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, 1, j-1, i+1));
+							insertMove(moveString(j, i, j-1, i+1));
 						//check the lower right square and whether it can attack
 						if(!(i+1 > 7) && !(j+1 > 6) && b.getPositions()[i+1][j+1] == GamePiece.NONE &&
 								( b.getPositions()[i][j+1] == GamePiece.COMPUTER_KING || 
@@ -122,7 +130,7 @@ public class Game {
 								  b.getPositions()[i][j+1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i][j+1] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i][j+1] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, 1, j+1, i+1));
+							insertMove(moveString(j, i, j+1, i+1));
 					}  //Human: Mini Ninja check
 					
 					//checking  possible moves for Human: Mini Samurai
@@ -137,7 +145,7 @@ public class Game {
 								  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, 1, j-1, i));
+							insertMove(moveString(j, i, j-1, i));
 						//check the right square
 						if(!(j+1 > 6) && b.getPositions()[i][j+1] == GamePiece.NONE &&
 								( b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_KING || 
@@ -145,7 +153,7 @@ public class Game {
 								  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, 1, j+1, i));
+							insertMove(moveString(j, i, j+1, i));
 					}  //Human: Mini Samurai check
 					
 					//checking  possible moves for Human: Ninja
@@ -228,6 +236,8 @@ public class Game {
 				}  //HUMAN for(j)
 			}  //HUMAN for(i)
 		}  //HUMAN if
+		
+		//Generates the moves only for the Computer
 		if(p == COMPUTER) {
 			for(int i = 0; i < 8; i++) {
 				for(int j = 0; j < 7; j++) {
@@ -247,7 +257,7 @@ public class Game {
 								  b.getPositions()[i][j-1] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i][j-1] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i][j-1] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, 1, j-1, i-1));
+							insertMove(moveString(j, i, j-1, i-1));
 						//check the lower right square and whether it can attack
 						if(!(i-1 > 7) && !(j+1 > 6) && b.getPositions()[i-1][j+1] == GamePiece.NONE &&
 								( b.getPositions()[i][j+1] == GamePiece.HUMAN_KING || 
@@ -255,7 +265,7 @@ public class Game {
 								  b.getPositions()[i][j+1] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i][j+1] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i][j+1] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, 1, j+1, i-1));
+							insertMove(moveString(j, i, j+1, i-1));
 					}  //Computer: Mini Ninja check
 					
 					//checking  possible moves for Computer: Mini Samurai
@@ -270,7 +280,7 @@ public class Game {
 								  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, 1, j-1, i));
+							insertMove(moveString(j, i, j-1, i));
 						//check the right square and whether it can attack
 						if(!(j+1 > 6) && b.getPositions()[i][j+1] == GamePiece.NONE &&
 								( b.getPositions()[i+1][j+1] == GamePiece.HUMAN_KING || 
@@ -278,7 +288,7 @@ public class Game {
 								  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, 1, j+1, i));
+							insertMove(moveString(j, i, j+1, i));
 					}  //Computer: Mini Samurai check
 					
 					//checking  possible moves for Computer: Ninja
@@ -389,7 +399,26 @@ public class Game {
 	}  //moveString
 	
 	private boolean isValid(String m) {
-		return true;
+		return false;
+	}
+	
+	private String makeUppercase(String in) {
+		String out = new String();
+		for(int i = 0; i < 4; i++) {
+			if(i == 0 || i == 2) {
+				if(in.charAt(i) == 'a') out = out.concat("A");
+				else if(in.charAt(i) == 'b') out = out.concat("B");
+				else if(in.charAt(i) == 'c') out = out.concat("C");
+				else if(in.charAt(i) == 'd') out = out.concat("D");
+				else if(in.charAt(i) == 'e') out = out.concat("E");
+				else if(in.charAt(i) == 'f') out = out.concat("F");
+				else if(in.charAt(i) == 'g') out = out.concat("G");
+			}
+			else
+				out = out.concat(String.valueOf(in.charAt(i)));
+		}  //for
+		System.out.println(out);
+		return out;
 	}
 	
 	private void insertMove(String s) {
@@ -400,6 +429,43 @@ public class Game {
 		moveList.add(s);
 	}  //insertMove()
 	
+	/*
+	 * Method that displays the possible moves
+	 */
+	private void outputPossMoves(int p) {
+		int count = 1;
+		if(p == HUMAN)
+			System.out.println("\tThese are your possible moves:");
+		for(String move : moveList) {
+			if(count % 6 == 0)
+				System.out.println("\t" + move);
+			else
+				System.out.print("\t" + move);
+			count++;
+		}  //for
+		System.out.println(" ");
+	}
+	
+	/*
+	 * Method prints returns the integer array equivalent of the move.
+	 */
+	private int[] parseInput(String in) {
+		int[] out = new int[4];
+		for(int i = 0; i < 4; i++) {
+			if(in.charAt(i) == 'A' || in.charAt(i) == 'a' || in.charAt(i) == '8') out[i] = 0;
+			else if(in.charAt(i) == 'B' || in.charAt(i) == 'b' || in.charAt(i) == '7') out[i] = 1;
+			else if(in.charAt(i) == 'C' || in.charAt(i) == 'c' || in.charAt(i) == '6') out[i] = 2;
+			else if(in.charAt(i) == 'D' || in.charAt(i) == 'd' || in.charAt(i) == '5') out[i] = 3;
+			else if(in.charAt(i) == 'E' || in.charAt(i) == 'e' || in.charAt(i) == '4') out[i] = 4;
+			else if(in.charAt(i) == 'F' || in.charAt(i) == 'f' || in.charAt(i) == '3') out[i] = 5;
+			else if(in.charAt(i) == 'G' || in.charAt(i) == 'g' || in.charAt(i) == '2') out[i] = 6;
+			else if(in.charAt(i) == '1') out[i] = 7;
+		}  //for
+		return out;
+	}
+	
+	
+	//Possible move to individual methods
 //	private void humamNinjaMoves() {
 //		
 //	}  //humanNinjaMoves()
