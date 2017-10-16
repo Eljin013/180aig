@@ -1,51 +1,59 @@
 package a1;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
 	private Board board;
 	private boolean humanFirst;
 	private Scanner scan;
-	
-	private String possMove;
+	private boolean gameOver;
+	private Player winner;
 	private int listCapacity = 10;
 	private ArrayList<String> moveList = new ArrayList<String>(listCapacity);
 
-	//Constants
-	final private int HUMAN = 111;
-	final private int COMPUTER = 222;
-
 	public Game() {
-		board = Board.getInstance();
+		board = Board.getInstance(this);
+		setGameOver(false);
 		scan = new Scanner(System.in);
 		runGameLoop(board);
 	}
 	
 	private void runGameLoop(Board b) {
-		System.out.println("\tHello! My name is Scruffles, the Master of Karate Chops!");
+		System.out.println("\tI am Scruffles, the Master of Karate Chops!");
+		System.out.println("\tWelcome to your demise!");
 		askPlayer();
 		b.displayBoard();
-		for(int i = 0; i < 1; i++) {
+		OUTER_LOOP:
+		for(int i = 0; ; i++) {
 			if(!humanFirst) {
 				System.out.println("\t\tRound " + (i+1));
-				moveGenerator(b, COMPUTER);
+				moveGenerator(b, Player.COMPUTER);
 				computerTurn(b);
-				isGameOver(b, COMPUTER);
-				moveGenerator(b, HUMAN);
+				if(isGameOver(b, Player.COMPUTER))
+					break OUTER_LOOP;
+				moveGenerator(b, Player.HUMAN);
 				humanTurn(b);
-				isGameOver(b, HUMAN);
+				if(isGameOver(b, Player.HUMAN))
+					break OUTER_LOOP;
 			}  //if
 			else {
 				System.out.println("\t\tRound " + (i+1));
-				moveGenerator(b, HUMAN);
+				moveGenerator(b, Player.HUMAN);
 				humanTurn(b);
-				isGameOver(b, HUMAN);
-				moveGenerator(b, COMPUTER);
+				if(isGameOver(b, Player.HUMAN))
+					break OUTER_LOOP;
+				moveGenerator(b, Player.COMPUTER);
 				computerTurn(b);
-				isGameOver(b, COMPUTER);
+				if(isGameOver(b, Player.COMPUTER))
+					break OUTER_LOOP;
 			}
 		}  //for
+		//Goes into as loop to keep the window open
+		for(;;) {
+			
+		}
 	}
 	
 	public void askPlayer() {
@@ -60,50 +68,83 @@ public class Game {
 	
 	private void humanTurn(Board b) {
 		System.out.println("It's the human's turn.");
-		//display the possible moves
-		outputPossMoves(HUMAN);
-		//Human takes turn
-		String input;
-		do{
-			System.out.println("\tGo ahead.  Make a move.");
-			input = scan.next();
-			makeUppercase(input);
-		}while(!isValid(input));
-
-		
-//		int[] comInput = parseInput(input);
-
-		
-		//update the board
-		b.updateBoard();
-
-		//clear the moveList
-		moveList.clear();
-		b.displayBoard();
+		if(moveList.isEmpty()) {
+			setGameOver(true);
+			setWinner(Player.COMPUTER);
+		}
+		else {
+			//Display the possible Human moves
+			outputPossMoves(Player.HUMAN);
+			
+			//Prompts the Human to enter a move
+			String input;  												//Player input String
+			boolean firstPass = true;  									//Control boolean for text output
+			do{
+				if(!firstPass)
+					System.out.println("\tCan't do that.  Try again.");  	//Message after input mistake
+				else
+					System.out.println("\tGo ahead.  Make a move. [Not case sensitive.]");  	//Initial message for player input
+				input = scan.next();  									//Takes in the players input
+				makeUppercase(input);  									//Makes the player input upper-case
+				firstPass = false;										//Changes the output control to false
+			}while(!isValid(input));
+	
+			//Changes the String to an integer array
+			int[] comInput = parseInput(input);
+	
+			//Update the board with the Humans move, clear the moveList, and display the board
+			b.updateBoard(comInput, Player.HUMAN);
+			moveList.clear();
+			b.displayBoard();
+		}
 	}  //humanTurn()
 	
 	private void computerTurn(Board b) {
 		System.out.println("It's the computer's turn.");
-		//display the possible moves
-		outputPossMoves(COMPUTER);
-
-		//Computer takes turn
-		//update the board
-		b.updateBoard();
-
-		//clear the moveList
-		moveList.clear();
-		b.displayBoard();
+		if(moveList.isEmpty()) {
+			setGameOver(true);
+			setWinner(Player.HUMAN);
+		}
+		else {
+			//Display the possible Computer moves
+			outputPossMoves(Player.COMPUTER);
+			String input = new String();								//Computer input String
+			
+			//Computer makes a random move
+			Random randNum = new Random();
+			int randMove = randNum.nextInt(moveList.size());
+			input = moveList.get(randMove);
+			System.out.println("My move is " + input);
+			
+			//Changes the String to an integer array
+			int[] comInput = parseInput(input);
+			
+			//Update the board with the Computers move, clear the moveList, and display the board
+			b.updateBoard(comInput, Player.COMPUTER);
+			moveList.clear();
+			b.displayBoard();
+		}
 	}  //computerTurn()
 	
-	private void isGameOver(Board b, int p) {
-		System.out.println("Game is not over yet.");
+	private boolean isGameOver(Board b, Player player) {
+		//Checks if game is over by captured King
+		if(gameOver) {
+			if(winner == Player.HUMAN)
+				System.out.println("You win this time...");
+			else
+				System.out.println("I am victorious!");
+			return true;
+		}
+		else {	
+			System.out.println("Game is not over yet.");
+			return false;
+		}
 	}  //isGameOver()
 
 
-	private ArrayList<String> moveGenerator(Board b, int p) {
+	private ArrayList<String> moveGenerator(Board b, Player p) {
 		//Generates the moves only for the Human player
-		if(p == HUMAN) {
+		if(p == Player.HUMAN) {
 			for(int i = 0; i < 8; i++) {
 				for(int j = 0; j < 7; j++) {
 					
@@ -169,7 +210,7 @@ public class Game {
 						for(int z = 1; z < 6; z++) {
 							if((i-z < 0) || (j+z > 6) || b.getPositions()[i-z][j] != GamePiece.NONE)
 								break;
-							if(b.getPositions()[i+z][j+z] == GamePiece.NONE && !(i-z < 0) && !(j+z > 6))
+							if(!(i-z < 0) && !(j+z > 6) && b.getPositions()[i+z][j+z] == GamePiece.NONE )
 								insertMove(moveString(j, i, j+z, i-z));
 						}  //for: upper right
 						//check the lower left squares until something is in its path and whether it can attack
@@ -238,7 +279,7 @@ public class Game {
 		}  //HUMAN if
 		
 		//Generates the moves only for the Computer
-		if(p == COMPUTER) {
+		if(p == Player.COMPUTER) {
 			for(int i = 0; i < 8; i++) {
 				for(int j = 0; j < 7; j++) {
 					
@@ -436,9 +477,9 @@ public class Game {
 	/*
 	 * Method that displays the possible moves
 	 */
-	private void outputPossMoves(int p) {
+	private void outputPossMoves(Player p) {
 		int count = 1;
-		if(p == HUMAN)
+		if(p == Player.HUMAN)
 			System.out.println("\tThese are your possible moves:");
 		for(String move : moveList) {
 			if(count % 6 == 0)
@@ -451,7 +492,7 @@ public class Game {
 	}
 	
 	/*
-	 * Method prints returns the integer array equivalent of the move.
+	 * Method returns the integer array equivalent of the move.
 	 */
 	private int[] parseInput(String in) {
 		int[] out = new int[4];
@@ -466,6 +507,14 @@ public class Game {
 			else if(in.charAt(i) == '1') out[i] = 7;
 		}  //for
 		return out;
+	}
+
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
+	}
+
+	public void setWinner(Player winner) {
+		this.winner = winner;
 	}
 	
 	

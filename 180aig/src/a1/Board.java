@@ -2,18 +2,17 @@ package a1;
 
 public class Board {
 	private static Board boardInstance = null;
+	private Game game;
 	private GamePiece[][] positions;
-
-
 	
-	
-	protected Board() {
+	protected Board(Game game) {
+		this.game = game;
 		initializeBoard();
 	}
 	
-	public static Board getInstance() {
+	public static Board getInstance(Game game) {
 		if(boardInstance == null)
-			boardInstance = new Board();
+			boardInstance = new Board(game);
 		return boardInstance;
 	}
 	
@@ -82,12 +81,65 @@ public class Board {
 		return positions;
 	}
 	
-	public void updateBoard() {
+	public void updateBoard(int[] move, Player player) {
+		//Add GamePiece to the "to" position
+		positions[move[3]][move[2]] = positions[move[1]][move[0]];
+		//Remove GamePiece from the "from" position
+		positions[move[1]][move[0]] = GamePiece.NONE;
+
+		//Checks if the HUMAN's move is an attack
+		if(player == Player.HUMAN && 
+				( positions[move[3]-1][move[2]] == GamePiece.COMPUTER_KING || 
+				  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_NINJA ||
+				  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_SAMURAI ||
+				  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_NINJA  ||
+				  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_SAMURAI )) {
+			System.out.println("HI-YA!!!!!!");
+			if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_KING) {
+				game.setGameOver(true);
+				game.setWinner(Player.HUMAN);
+			}
+			//Sets the Ninja to Mini-Ninja
+			if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_NINJA)
+				positions[move[3]-1][move[2]] = GamePiece.COMPUTER_MINI_NINJA;
+			//Sets the Samurai to Mini-Samurai
+			if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_SAMURAI)
+				positions[move[3]-1][move[2]] = GamePiece.COMPUTER_MINI_SAMURAI;
+			//Removes the GamePiece from the Board
+			if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_NINJA ||
+					positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_SAMURAI)
+				positions[move[3]-1][move[2]] = GamePiece.NONE;
+		}  //if: Human attack
+		
+		//Checks if the COMPUTER's move is an attack
+		if(player == Player.COMPUTER && 
+				( positions[move[3]+1][move[2]] == GamePiece.HUMAN_KING || 
+				  positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_NINJA ||
+				  positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_SAMURAI ||
+				  positions[move[3]+1][move[2]] == GamePiece.HUMAN_NINJA  ||
+				  positions[move[3]+1][move[2]] == GamePiece.HUMAN_SAMURAI )) {
+			System.out.println("HI-YA!!!!!!");
+			//Sets gameOver to true if the COMPUTER attacks the King
+			if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_KING) {
+				game.setGameOver(true);
+				game.setWinner(Player.COMPUTER);
+			}
+			//Sets the Ninja to Mini-Ninja
+			if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_NINJA)
+				positions[move[3]+1][move[2]] = GamePiece.HUMAN_MINI_NINJA;
+			//Sets the Samurai to Mini-Samurai
+			if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_SAMURAI)
+				positions[move[3]+1][move[2]] = GamePiece.HUMAN_MINI_SAMURAI;
+			//Removes the GamePiece from the Board
+			if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_NINJA ||
+					positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_SAMURAI)
+				positions[move[3]+1][move[2]] = GamePiece.NONE;
+		}  //if: Computer attack
 		System.out.println("The board has been updated.");
 	}
 	
 	public void displayBoard() {
-		System.out.println("\t   ---------------------  Computer");
+		System.out.println("\t   ----------------------------  Computer");
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 7; j++) {
 				//prints the left-hand side of the board
@@ -100,22 +152,22 @@ public class Board {
 				if(i == 6 && j == 0) System.out.print("\t 2 ");
 				if(i == 7 && j == 0) System.out.print("\t 1 ");
 				//prints out the game pieces
-				if(positions[i][j] == GamePiece.NONE) System.out.print("   ");
-				if(positions[i][j] == GamePiece.HUMAN_KING  || positions[i][j] == GamePiece.COMPUTER_KING) 
-					System.out.print(" K ");
-				if(positions[i][j] == GamePiece.HUMAN_NINJA) System.out.print(" J ");
-				if(positions[i][j] == GamePiece.HUMAN_SAMURAI) System.out.print(" S ");
-				if(positions[i][j] == GamePiece.HUMAN_MINI_NINJA) System.out.print(" j ");
-				if(positions[i][j] == GamePiece.HUMAN_MINI_SAMURAI) System.out.print(" s ");
-				if(positions[i][j] == GamePiece.COMPUTER_NINJA) System.out.print(" J ");
-				if(positions[i][j] == GamePiece.COMPUTER_SAMURAI) System.out.print(" S ");
-				if(positions[i][j] == GamePiece.COMPUTER_MINI_NINJA) System.out.print(" j ");
-				if(positions[i][j] == GamePiece.COMPUTER_MINI_SAMURAI) System.out.print(" s ");
+				if(positions[i][j] == GamePiece.NONE) System.out.print("    ");
+				if(positions[i][j] == GamePiece.HUMAN_KING) System.out.print(" hK ");
+				if(positions[i][j] == GamePiece.HUMAN_NINJA) System.out.print(" hJ ");
+				if(positions[i][j] == GamePiece.HUMAN_SAMURAI) System.out.print(" hS ");
+				if(positions[i][j] == GamePiece.HUMAN_MINI_NINJA) System.out.print(" hj ");
+				if(positions[i][j] == GamePiece.HUMAN_MINI_SAMURAI) System.out.print(" hs ");
+				if(positions[i][j] == GamePiece.COMPUTER_KING) System.out.print(" cK ");
+				if(positions[i][j] == GamePiece.COMPUTER_NINJA) System.out.print(" cJ ");
+				if(positions[i][j] == GamePiece.COMPUTER_SAMURAI) System.out.print(" cS ");
+				if(positions[i][j] == GamePiece.COMPUTER_MINI_NINJA) System.out.print(" cj ");
+				if(positions[i][j] == GamePiece.COMPUTER_MINI_SAMURAI) System.out.print(" cs ");
 			}  //for(j)
 			System.out.println(" ");
 		}  //for(i)
-		System.out.println("\t   ---------------------  Human");
-		System.out.println("\t    A  B  C  D  E  F  G");
+		System.out.println("\t   ----------------------------  Human");
+		System.out.println("\t     A   B   C   D   E   F   G");
 	}
 	
 	
