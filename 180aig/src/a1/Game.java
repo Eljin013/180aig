@@ -10,13 +10,17 @@ public class Game {
 	private Scanner scan;
 	private boolean gameOver;
 	private Player winner;
-	private int listCapacity = 10;
-	private ArrayList<String> moveList;
+	private final int INITIAL_SIZE = 20;
 	private int MAXDEPTH = 3;
 
+	//Testing variables
+	private int makeMoveCount = 0;
+	private int minCount = 0;
+	private int maxCount = 0;
+	
+	
 	public Game() {
 		board = Board.getInstance(this);
-		moveList = new ArrayList<String>(listCapacity);
 		setGameOver(false);
 		setWinner(Player.NONE);
 		scan = new Scanner(System.in);
@@ -66,15 +70,15 @@ public class Game {
 	}  //askPlayerInput()
 	
 	private void humanTurn(Board b) {
-		setMoveList(hMoveGen(b));
+		ArrayList<String> hMoveList = new ArrayList<>(hMoveGen(b));
 //		System.out.println("It's the human's turn.");
-		if(moveList.isEmpty()) {
+		if(hMoveList.isEmpty()) {
 			setGameOver(true);
 			setWinner(Player.COMPUTER);
 		}
 		else {
 			//Display the possible Human moves
-			outputPossMoves(Player.HUMAN);
+			outputPossMoves(hMoveList, Player.HUMAN);
 			
 			//Prompts the Human to enter a move
 			String input;  												//Player input String
@@ -87,7 +91,7 @@ public class Game {
 				input = scan.next();  									//Takes in the players input
 				makeUppercase(input);  									//Makes the player input upper-case
 				firstPass = false;										//Changes the output control to false
-			}while(!isValid(moveList, input));
+			}while(!isValid(hMoveList, input));
 	
 			//Changes the String to an integer array
 			int[] comInput = parseInput(input);
@@ -99,36 +103,28 @@ public class Game {
 	}  //humanTurn()
 	
 	private void computerTurn(Board b) {
-		setMoveList(cMoveGen(b));
+		ArrayList<String> cMoveList = new ArrayList<>(cMoveGen(b));
 //		System.out.println("It's the computer's turn.");
-		if(moveList.isEmpty()) {
+		if(cMoveList.isEmpty()) {
 			setGameOver(true);
 			setWinner(Player.HUMAN);
 		}
 		else {
 			//Display the possible Computer moves
-			outputPossMoves(Player.COMPUTER);
-			//makeMove(b);
+			outputPossMoves(cMoveList, Player.COMPUTER);
 			
-			String cMove = new String();					//Computer input String
-//			makeMove(board);
-			//Computer makes a random move
-//			randomMove();
-
-			Random randNum = new Random();
-			int randMove = randNum.nextInt(moveList.size());
-			cMove = moveList.get(randMove);
-			String flipCMove = flipMove(cMove);
-			System.out.println("My move is " + cMove + " [" + flipCMove + "]");
-			
-			//Changes the String to an integer array
-			int[] comInput = parseInput(cMove);
-			
-			//Update the board with the Computers move, clear the moveList, and display the board
-			b.updateBoard(comInput, Player.COMPUTER);
-			moveList.clear();
+			makeMove(b);
+//			Computer makes a random move
+//			String cMove = new String();					//Computer input String
+//			Random randNum = new Random();
+//			int randMove = randNum.nextInt(moveList.size());
+//			cMove = moveList.get(randMove);
+//			String flipCMove = flipMove(cMove);
+//			System.out.println("My move is " + cMove + " [" + flipCMove + "]");
+				
+			//Display the board.
 			b.displayBoard();
-		}
+		}  //else
 	}  //computerTurn()
 	
 	private boolean isGameOver(Board b) {
@@ -224,22 +220,23 @@ public class Game {
 		return out;
 	}
 	
-	private void insertMove(String s) {
-		if(getMoveList().size() >= listCapacity) {
-			listCapacity += 5;
-			getMoveList().ensureCapacity(listCapacity);
+	private ArrayList<String> insertMove(ArrayList<String> ml, String s) {
+		if(ml.size() >= INITIAL_SIZE) {
+			int sizeInc = ml.size() + 5;
+			ml.ensureCapacity(sizeInc);
 		}
-		getMoveList().add(s);
+		ml.add(s);
+		return ml;
 	}  //insertMove()
 	
 	/*
 	 * Method that displays the possible moves
 	 */
-	private void outputPossMoves(Player p) {
+	private void outputPossMoves(ArrayList<String> ml, Player p) {
 		int count = 1;
 		if(p == Player.HUMAN)
 			System.out.println("\tThese are your possible moves:");
-		for(String move : getMoveList()) {
+		for(String move : ml) {
 			if(count % 6 == 0)
 				System.out.println("\t" + move);
 			else
@@ -296,16 +293,24 @@ public class Game {
 		ArrayList<String> ml = new ArrayList<>(cMoveGen(b));
 		//Iterate through each Move
 		for(String move: ml) {
-			b.updateBoard(parseInput(move), Player.COMPUTER);
-			m.setScore(min(b, depth++));
+			System.out.println("makeMove: " + makeMoveCount++ + " D: " + depth + " ml: " + ml.size());
+			m.setMove(move);
+			b.minimaxUpdate(parseInput(m.getMove()), Player.COMPUTER);
+			m.setScore(min(b, depth+1));
 			if(m.getScore() > best.getScore())
-				best.setMove(move);
+				best.setMove(m.getMove());
 			b.setPositions(bCopy);
+			depth = 0;
 		}
+		System.out.println("Reaached the end of makeMove()");
 		setGameOver(false);
 		setWinner(Player.NONE);
-//		String flipCMove = flipMove(cMove);
-//		System.out.println("My move is " + cMove + " [" + flipCMove + "]");
+		String flipCMove = flipMove(best.getMove());
+		System.out.println("My move is " + best.getMove() + " [" + flipCMove + "]");
+		
+		//Changes the String to an integer array
+		int[] comInput = parseInput(best.getMove());
+		b.updateBoard(comInput, Player.COMPUTER);
 	}  //makeMove()
 	
 	private int min(Board b, int d) {
@@ -314,26 +319,33 @@ public class Game {
 		MoveScore m = new MoveScore();				//current move
 		
 		GamePiece[][] bCopy = b.getPositions();	//state of Board
-		ArrayList<String> ml = new ArrayList<>(hMoveGen(b));
+		
+		ArrayList<String> mlMin = new ArrayList<>(hMoveGen(b));
+		System.out.println("before for mlMin: " + mlMin.size());
 		
 		if(isGameOver()) {
 			if(getWinner() == Player.COMPUTER)
 				return +999;
 			else
 				return -999;
-		}
-		else if(d == MAXDEPTH)
+		}  //if: gameOver
+		else if(d == MAXDEPTH) {
+			System.out.println("inside min eval");
 			return b.evaluate();  //reached the leaf node
+		}  //if: depth
 		else {
-			for(String move : ml) {
-				b.updateBoard(parseInput(move), Player.HUMAN);
-				m.setScore(max(b, d++));
+			for(String move : mlMin) {
+				System.out.println("min: " + minCount++ + " D: " + d + " ml: " + mlMin.size());
+				m.setMove(move);
+				b.minimaxUpdate(parseInput(m.getMove()), Player.HUMAN);
+				m.setScore(max(b, d+1));
 				if(m.getScore() < best.getScore())
-					best.setMove(move);
+					best.setMove(m.getMove());
 				b.setPositions(bCopy);
 			}
+			System.out.println("Reaached the end of min()");
 			return best.getScore();
-		}
+		}  //else
 	}  //min()
 	
 	private int max(Board b, int d) {
@@ -342,41 +354,36 @@ public class Game {
 		MoveScore m = new MoveScore();				//current move
 		
 		GamePiece[][] bCopy = b.getPositions();	//state of Board
-		ArrayList<String> ml = new ArrayList<>(cMoveGen(b));
+		ArrayList<String> mlMax = new ArrayList<>(cMoveGen(b));
+		System.out.println("before for mlMax: " + mlMax.size());
 		
 		if(isGameOver()) {
 			if(getWinner() == Player.COMPUTER)
 				return +999;
 			else
 				return -999;
-		}
-		else if(d == MAXDEPTH)
+		}  //if: gameOver
+		else if(d == MAXDEPTH) {
+			System.out.println("inside max eval");
 			return b.evaluate();  //reached the leaf node
+		}  //if: depth
 		else {
-			for(String move : ml) {
-				b.updateBoard(parseInput(move), Player.HUMAN);
-				m.setScore(min(b, d++));
+			for(String move : mlMax) {
+				System.out.println("max: " + maxCount++ + " D: " + d + " ml: " + mlMax.size());
+				m.setMove(move);
+				b.minimaxUpdate(parseInput(m.getMove()), Player.HUMAN);
+				m.setScore(min(b, d+1));
 				if(m.getScore() > best.getScore())
-					best.setMove(move);
+					best.setMove(m.getMove());
 				b.setPositions(bCopy);
 			}
+			System.out.println("Reaached the end of max()");
 			return best.getScore();
-		}
+		}  //else
 	}  //max()
 	
-	private int evaluate() {
-		return 1;
-	}  //evaluate()
-	
-	private ArrayList<String> getMoveList() {
-		return moveList;
-	}
-	
-	private void setMoveList(ArrayList<String> ml) {
-		this.moveList = ml;
-	}
-	
 	private ArrayList<String> hMoveGen(Board b) {
+		ArrayList<String> hMoves = new ArrayList<>();
 		//Generates the moves only for the Human player
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 7; j++) {
@@ -385,10 +392,10 @@ public class Game {
 				if(b.getPositions()[i][j] == GamePiece.HUMAN_MINI_NINJA) {
 					//check the upper left square
 					if(!(i-1 < 0) && !(j-1 < 0) && b.getPositions()[i-1][j-1] == GamePiece.NONE)
-						insertMove(moveString(j, i, j-1, i-1));
+						hMoves = insertMove(hMoves, moveString(j, i, j-1, i-1));
 					//check the upper right square
 					if(!(i-1 < 0) && !(j+1 > 6) && b.getPositions()[i-1][j+1] == GamePiece.NONE)
-						insertMove(moveString(j, i, j+1, i-1));
+						hMoves = insertMove(hMoves, moveString(j, i, j+1, i-1));
 					//check the lower left square and whether it can attack
 					if(!(i+1 > 7) && !(j-1 < 0) && b.getPositions()[i+1][j-1] == GamePiece.NONE &&
 							( b.getPositions()[i][j-1] == GamePiece.COMPUTER_KING || 
@@ -396,7 +403,7 @@ public class Game {
 							  b.getPositions()[i][j-1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 							  b.getPositions()[i][j-1] == GamePiece.COMPUTER_NINJA  ||
 							  b.getPositions()[i][j-1] == GamePiece.COMPUTER_SAMURAI ) )
-						insertMove(moveString(j, i, j-1, i+1));
+						hMoves = insertMove(hMoves, moveString(j, i, j-1, i+1));
 					//check the lower right square and whether it can attack
 					if(!(i+1 > 7) && !(j+1 > 6) && b.getPositions()[i+1][j+1] == GamePiece.NONE &&
 							( b.getPositions()[i][j+1] == GamePiece.COMPUTER_KING || 
@@ -404,14 +411,14 @@ public class Game {
 							  b.getPositions()[i][j+1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 							  b.getPositions()[i][j+1] == GamePiece.COMPUTER_NINJA  ||
 							  b.getPositions()[i][j+1] == GamePiece.COMPUTER_SAMURAI ) )
-						insertMove(moveString(j, i, j+1, i+1));
+						hMoves = insertMove(hMoves, moveString(j, i, j+1, i+1));
 				}  //Human: Mini Ninja check
 				
 				//checking  possible moves for Human: Mini Samurai
 				if(b.getPositions()[i][j] == GamePiece.HUMAN_MINI_SAMURAI) {
 					//check the square ahead
 					if(!(i-1 < 0) && b.getPositions()[i-1][j] == GamePiece.NONE)
-						insertMove(moveString(j, i, j, i-1));
+						hMoves = insertMove(hMoves, moveString(j, i, j, i-1));
 					//check the left square
 					if(!(j-1 < 0) && b.getPositions()[i][j-1] == GamePiece.NONE &&
 							( b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_KING || 
@@ -419,7 +426,7 @@ public class Game {
 							  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 							  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_NINJA  ||
 							  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_SAMURAI ) )
-						insertMove(moveString(j, i, j-1, i));
+						hMoves = insertMove(hMoves, moveString(j, i, j-1, i));
 					//check the right square
 					if(!(j+1 > 6) && b.getPositions()[i][j+1] == GamePiece.NONE &&
 							( b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_KING || 
@@ -427,7 +434,7 @@ public class Game {
 							  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_MINI_SAMURAI ||
 							  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_NINJA  ||
 							  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_SAMURAI ) )
-						insertMove(moveString(j, i, j+1, i));
+						hMoves = insertMove(hMoves, moveString(j, i, j+1, i));
 				}  //Human: Mini Samurai check
 				
 				//checking  possible moves for Human: Ninja
@@ -437,14 +444,14 @@ public class Game {
 						if((i-z < 0) || (j-z < 0) || b.getPositions()[i-z][j-z] != GamePiece.NONE)
 							break;
 						else if(!(i-z < 0) && !(j-z < 0) && b.getPositions()[i-z][j-z] == GamePiece.NONE)
-							insertMove(moveString(j, i, j-z, i-z));
+							hMoves = insertMove(hMoves, moveString(j, i, j-z, i-z));
 					}  //for: upper left
 					//check the upper right squares until something is in its path
 					for(int z = 1; z < 6; z++) {
 						if((i-z < 0) || (j+z > 6) || b.getPositions()[i-z][j+z] != GamePiece.NONE)
 							break;
 						if(!(i-z < 0) && !(j+z > 6) && b.getPositions()[i-z][j+z] == GamePiece.NONE )
-							insertMove(moveString(j, i, j+z, i-z));
+							hMoves = insertMove(hMoves, moveString(j, i, j+z, i-z));
 					}  //for: upper right
 					//check the lower left squares until something is in its path and whether it can attack
 					for(int z = 1; z < 6; z++) {
@@ -456,11 +463,11 @@ public class Game {
 								  b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i+z-1][j-z] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, i, j-z, i+z));
+							hMoves = insertMove(hMoves, moveString(j, i, j-z, i+z));
 					}  //for: lower left
 					//check the lower right squares until something is in its path and whether it can attack
 					for(int z = 1; z < 6; z++) {
-						if((i+z > 7) || (j+z > 6) || b.getPositions()[i+z][j-z] != GamePiece.NONE)
+						if((i+z > 7) || (j+z > 6) || b.getPositions()[i+z][j+z] != GamePiece.NONE)
 							break;
 						else if(!(i+z > 7) && !(j+z > 6) && b.getPositions()[i+z][j+z] == GamePiece.NONE &&
 								( b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_KING || 
@@ -468,7 +475,7 @@ public class Game {
 								  b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i+z-1][j+z] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, i, j+z, i+z));
+							hMoves = insertMove(hMoves, moveString(j, i, j+z, i+z));
 					}  //for: lower right
 				}  //Human: Ninja check
 				
@@ -479,7 +486,7 @@ public class Game {
 						if((i-z <0) || b.getPositions()[i-z][j] != GamePiece.NONE)
 							break;
 						if(!(i-1 < 0) && b.getPositions()[i-z][j] == GamePiece.NONE)
-							insertMove(moveString(j, i, j, i-z));
+							hMoves = insertMove(hMoves, moveString(j, i, j, i-z));
 					}  //for: forward squares
 					//check the left squares until something is in its path and whther it can attack
 					for(int z = 1; z < 6; z++) {
@@ -491,7 +498,7 @@ public class Game {
 								  b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i-1][j-z] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, i, j-z, i));
+							hMoves = insertMove(hMoves, moveString(j, i, j-z, i));
 					}  //for: left
 					//check the right squares until something is in its path and whether it can attack
 					for(int z = 1; z < 6; z++) {
@@ -503,18 +510,19 @@ public class Game {
 								  b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_MINI_SAMURAI ||
 								  b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_NINJA  ||
 								  b.getPositions()[i-1][j+z] == GamePiece.COMPUTER_SAMURAI ) )
-							insertMove(moveString(j, i, j+z, i));
+							hMoves = insertMove(hMoves, moveString(j, i, j+z, i));
 					}  //for: left
 				}  //Human: Samurai check
 				
 			}  //HUMAN for(j)
 		}  //HUMAN for(i)
-		return getMoveList();
+		return hMoves;
 	}  //hMoveGen()
 		
 	private ArrayList<String> cMoveGen(Board b) {
+		ArrayList<String> cMoves = new ArrayList<>();
 		//Generates the moves only for the Computer
-	
+		
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 7; j++) {
 				
@@ -522,10 +530,10 @@ public class Game {
 				if(b.getPositions()[i][j] == GamePiece.COMPUTER_MINI_NINJA) {
 					//check the lower left square
 					if(!(i+1 > 7) && !(j-1 < 0) && b.getPositions()[i+1][j-1] == GamePiece.NONE)
-						insertMove(moveString(j, i, j-1, i+1));
+						cMoves = insertMove(cMoves, moveString(j, i, j-1, i+1));
 					//check the lower right square
 					if(!(i+1 > 7) && !(j+1 > 6) && b.getPositions()[i+1][j+1] == GamePiece.NONE)
-						insertMove(moveString(j, i, j+1, i+1));
+						cMoves = insertMove(cMoves, moveString(j, i, j+1, i+1));
 					//check the lower left square and whether it can attack
 					if(!(i-1 > 7) && !(j-1 < 0) && b.getPositions()[i-1][j-1] == GamePiece.NONE &&
 							( b.getPositions()[i][j-1] == GamePiece.HUMAN_KING || 
@@ -533,7 +541,7 @@ public class Game {
 							  b.getPositions()[i][j-1] == GamePiece.HUMAN_MINI_SAMURAI ||
 							  b.getPositions()[i][j-1] == GamePiece.HUMAN_NINJA  ||
 							  b.getPositions()[i][j-1] == GamePiece.HUMAN_SAMURAI ) )
-						insertMove(moveString(j, i, j-1, i-1));
+						cMoves = insertMove(cMoves, moveString(j, i, j-1, i-1));
 					//check the lower right square and whether it can attack
 					if(!(i-1 > 7) && !(j+1 > 6) && b.getPositions()[i-1][j+1] == GamePiece.NONE &&
 							( b.getPositions()[i][j+1] == GamePiece.HUMAN_KING || 
@@ -541,14 +549,14 @@ public class Game {
 							  b.getPositions()[i][j+1] == GamePiece.HUMAN_MINI_SAMURAI ||
 							  b.getPositions()[i][j+1] == GamePiece.HUMAN_NINJA  ||
 							  b.getPositions()[i][j+1] == GamePiece.HUMAN_SAMURAI ) )
-						insertMove(moveString(j, i, j+1, i-1));
+						cMoves = insertMove(cMoves, moveString(j, i, j+1, i-1));
 				}  //Computer: Mini Ninja check
 				
 				//checking  possible moves for Computer: Mini Samurai
 				if(b.getPositions()[i][j] == GamePiece.COMPUTER_MINI_SAMURAI) {
 					//check the square below
 					if(!(i+1 > 7) && b.getPositions()[i+1][j] == GamePiece.NONE)
-						insertMove(moveString(j, i, j, i+1));
+						cMoves = insertMove(cMoves, moveString(j, i, j, i+1));
 					//check left square and whether it can attack
 					if(!(j-1 < 0) && b.getPositions()[i][j-1] == GamePiece.NONE &&
 							( b.getPositions()[i+1][j-1] == GamePiece.HUMAN_KING || 
@@ -556,7 +564,7 @@ public class Game {
 							  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_MINI_SAMURAI ||
 							  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_NINJA  ||
 							  b.getPositions()[i+1][j-1] == GamePiece.HUMAN_SAMURAI ) )
-						insertMove(moveString(j, i, j-1, i));
+						cMoves = insertMove(cMoves, moveString(j, i, j-1, i));
 					//check the right square and whether it can attack
 					if(!(j+1 > 6) && b.getPositions()[i][j+1] == GamePiece.NONE &&
 							( b.getPositions()[i+1][j+1] == GamePiece.HUMAN_KING || 
@@ -564,7 +572,7 @@ public class Game {
 							  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_MINI_SAMURAI ||
 							  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_NINJA  ||
 							  b.getPositions()[i+1][j+1] == GamePiece.HUMAN_SAMURAI ) )
-						insertMove(moveString(j, i, j+1, i));
+						cMoves = insertMove(cMoves, moveString(j, i, j+1, i));
 				}  //Computer: Mini Samurai check
 				
 				//checking  possible moves for Computer: Ninja
@@ -574,14 +582,14 @@ public class Game {
 						if((i+z > 6) || (j-z < 0) || b.getPositions()[i+z][j-z] != GamePiece.NONE)
 							break;
 						else if(!(i+z > 7) && !(j-z < 0) && b.getPositions()[i+z][j-z] == GamePiece.NONE)
-							insertMove(moveString(j, i, j-z, i+z));
+							cMoves = insertMove(cMoves, moveString(j, i, j-z, i+z));
 					}  //for
 					//check the lower right squares until something is in path
 					for(int z = 1; z < 6; z++) {
 						if((i+z > 6) || (j+z > 6) || b.getPositions()[i+z][j+z] != GamePiece.NONE)
 							break;
 						if(b.getPositions()[i+z][j+z] == GamePiece.NONE && !(i+z < 0) && !(j+z > 6))
-							insertMove(moveString(j, i, j+z, i+z));
+							cMoves = insertMove(cMoves, moveString(j, i, j+z, i+z));
 					}  //for
 					//check the upper left squares until something is in its path
 					//and whether it can attack
@@ -594,7 +602,7 @@ public class Game {
 								  b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i-z+1][j-z] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, i, j-z, i-z));
+							cMoves = insertMove(cMoves, moveString(j, i, j-z, i-z));
 					}  //for: upper left
 					//check the upper right squares until something is in its path
 					//and whether it can attack
@@ -607,7 +615,7 @@ public class Game {
 								  b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i-z+1][j+z] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, i, j+z, i-z));
+							cMoves = insertMove(cMoves, moveString(j, i, j+z, i-z));
 					}  //for: upper right
 				}  //Computer: Ninja check
 				
@@ -618,7 +626,7 @@ public class Game {
 						if((i+z > 7) || b.getPositions()[i+z][j] != GamePiece.NONE)
 							break;
 						if(!(i+z > 7) && b.getPositions()[i+z][j] == GamePiece.NONE)
-							insertMove(moveString(j, i, j, i+z));
+							cMoves = insertMove(cMoves, moveString(j, i, j, i+z));
 					}  //for
 					//check the left squares until something is in its path and whther it can attack
 					for(int z = 1; z < 6; z++) {
@@ -630,7 +638,7 @@ public class Game {
 								  b.getPositions()[i+1][j-z] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i+1][j-z] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i+1][j-z] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, i, j-z, i));
+							cMoves = insertMove(cMoves, moveString(j, i, j-z, i));
 					}  //for: left
 					//check the right squares until something is in its path and whether it can attack
 					for(int z = 1; z < 6; z++) {
@@ -642,12 +650,12 @@ public class Game {
 								  b.getPositions()[i+1][j+z] == GamePiece.HUMAN_MINI_SAMURAI ||
 								  b.getPositions()[i+1][j+z] == GamePiece.HUMAN_NINJA  ||
 								  b.getPositions()[i+1][j+z] == GamePiece.HUMAN_SAMURAI ) )
-							insertMove(moveString(j, i, j+z, i));
+							cMoves = insertMove(cMoves, moveString(j, i, j+z, i));
 					}  //for: left
 				}  //Computer: Samurai check
 				
 			}  //COMPUTER for(j)
 		}  //COMPUTER for(i)
-		return getMoveList();
+		return cMoves;
 	}  //moveGenerator()
 }
