@@ -64,10 +64,15 @@ public class Game {
 		outputPossMoves(HUMAN);
 		//Human takes turn
 		String input;
+		boolean firstPass = true;
 		do{
-			System.out.println("\tGo ahead.  Make a move.");
+			if(!firstPass)
+				System.out.print("\tCan't do that.  Try again.");
+			else
+				System.out.println("\tGo ahead.  Make a move.");
 			input = scan.next();
 			makeUppercase(input);
+			firstPass = false;
 		}while(!isValid(input));
 
 		
