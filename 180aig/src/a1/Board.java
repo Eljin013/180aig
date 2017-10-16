@@ -81,6 +81,17 @@ public class Board {
 		return positions;
 	}
 	
+	public void setPositions(GamePiece[][] pos) {
+		this.positions = pos;
+	}
+	
+	/*
+	 * Heuristic for evaluating the progress of game
+	 */
+	public int evaluate() {
+		return 1;
+	}
+	
 	public void updateBoard(int[] move, Player player) {
 		//Add GamePiece to the "to" position
 		positions[move[3]][move[2]] = positions[move[1]][move[0]];
@@ -135,7 +146,7 @@ public class Board {
 					positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_SAMURAI)
 				positions[move[3]+1][move[2]] = GamePiece.NONE;
 		}  //if: Computer attack
-		System.out.println("The board has been updated.");
+//		System.out.println("The board has been updated.");
 	}
 	
 	public void displayBoard() {
