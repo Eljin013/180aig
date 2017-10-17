@@ -81,12 +81,40 @@ public class Board {
 		return positions;
 	}
 	
+	public void setPositions(GamePiece[][] pos) {
+		this.positions = pos;
+	}
+	
+	/*
+	 * Heuristic for evaluating the progress of game
+	 */
+	public int evaluate() {
+		int cPieces = 0;
+		int hPieces = 0; 
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 7; j++) {
+				if(positions[i][j] == GamePiece.COMPUTER_KING) cPieces += 1;
+				if(positions[i][j] == GamePiece.COMPUTER_MINI_NINJA ||
+						positions[i][j] == GamePiece.COMPUTER_MINI_SAMURAI) cPieces += 2;
+				if(positions[i][j] == GamePiece.COMPUTER_NINJA ||
+						positions[i][j] == GamePiece.COMPUTER_SAMURAI) cPieces += 3;
+				if(positions[i][j] == GamePiece.HUMAN_KING) hPieces += 1;
+				if(positions[i][j] == GamePiece.HUMAN_MINI_NINJA ||
+						positions[i][j] == GamePiece.HUMAN_MINI_SAMURAI) cPieces += 2;
+				if(positions[i][j] == GamePiece.HUMAN_NINJA ||
+						positions[i][j] == GamePiece.HUMAN_SAMURAI) cPieces += 3;
+			}  //for
+		}  //for
+		return cPieces - hPieces;
+	}
+	
 	public void updateBoard(int[] move, Player player) {
 		//Add GamePiece to the "to" position
 		positions[move[3]][move[2]] = positions[move[1]][move[0]];
 		//Remove GamePiece from the "from" position
 		positions[move[1]][move[0]] = GamePiece.NONE;
 
+<<<<<<< HEAD
 		//Checks if the HUMAN's move is an attack
 		if(player == Player.HUMAN && 
 				( positions[move[3]-1][move[2]] == GamePiece.COMPUTER_KING || 
@@ -138,7 +166,121 @@ public class Board {
 
 		}  //if: Computer attack
 		System.out.println("The board has been updated.");
+=======
+		//Checks if the within bounds
+		if( !(move[3]-1 < 0) && !(move[3]+1 > 7)) {
+			//Checks if the HUMAN's move is an attack
+			if(player == Player.HUMAN && 
+					( positions[move[3]-1][move[2]] == GamePiece.COMPUTER_KING || 
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_NINJA ||
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_SAMURAI ||
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_NINJA  ||
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_SAMURAI )) {
+				System.out.println("HI-YA!!!!!!");
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_KING) {
+					game.setGameOver(true);
+					game.setWinner(Player.HUMAN);
+				}
+				//Sets the Ninja to Mini-Ninja
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_NINJA)
+					positions[move[3]-1][move[2]] = GamePiece.COMPUTER_MINI_NINJA;
+				//Sets the Samurai to Mini-Samurai
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_SAMURAI)
+					positions[move[3]-1][move[2]] = GamePiece.COMPUTER_MINI_SAMURAI;
+				//Removes the GamePiece from the Board
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_NINJA ||
+						positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_SAMURAI)
+					positions[move[3]-1][move[2]] = GamePiece.NONE;
+			}  //if: Human attack
+			
+			//Checks if the COMPUTER's move is an attack
+			if(player == Player.COMPUTER && 
+					( positions[move[3]+1][move[2]] == GamePiece.HUMAN_KING || 
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_NINJA ||
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_SAMURAI ||
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_NINJA  ||
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_SAMURAI )) {
+				System.out.println("HI-YA!!!!!!");
+				//Sets gameOver to true if the COMPUTER attacks the King
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_KING) {
+					game.setGameOver(true);
+					game.setWinner(Player.COMPUTER);
+				}
+				//Sets the Ninja to Mini-Ninja
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_NINJA)
+					positions[move[3]+1][move[2]] = GamePiece.HUMAN_MINI_NINJA;
+				//Sets the Samurai to Mini-Samurai
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_SAMURAI)
+					positions[move[3]+1][move[2]] = GamePiece.HUMAN_MINI_SAMURAI;
+				//Removes the GamePiece from the Board
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_NINJA ||
+						positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_SAMURAI)
+					positions[move[3]+1][move[2]] = GamePiece.NONE;
+			}  //if: Computer attack
+		}  //if: within bounds
+//		System.out.println("The board has been updated.");
+>>>>>>> refs/remotes/origin/master
 	}
+	
+	public void minimaxUpdate(int[] move, Player player) {
+		//Add GamePiece to the "to" position
+		positions[move[3]][move[2]] = positions[move[1]][move[0]];
+		//Remove GamePiece from the "from" position
+		positions[move[1]][move[0]] = GamePiece.NONE;
+
+		//Checks if the within bounds
+		if( !(move[3]-1 < 0) && !(move[3]+1 > 7)) {
+			//Checks if the HUMAN's move is an attack
+			if(player == Player.HUMAN &&
+					( positions[move[3]-1][move[2]] == GamePiece.COMPUTER_KING || 
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_NINJA ||
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_SAMURAI ||
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_NINJA  ||
+					  positions[move[3]-1][move[2]] == GamePiece.COMPUTER_SAMURAI )) {
+	//			System.out.println("HI-YA!!!!!!");
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_KING) {
+					game.setGameOver(true);
+					game.setWinner(Player.HUMAN);
+				}
+				//Sets the Ninja to Mini-Ninja
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_NINJA)
+					positions[move[3]-1][move[2]] = GamePiece.COMPUTER_MINI_NINJA;
+				//Sets the Samurai to Mini-Samurai
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_SAMURAI)
+					positions[move[3]-1][move[2]] = GamePiece.COMPUTER_MINI_SAMURAI;
+				//Removes the GamePiece from the Board
+				if(positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_NINJA ||
+						positions[move[3]-1][move[2]] == GamePiece.COMPUTER_MINI_SAMURAI)
+					positions[move[3]-1][move[2]] = GamePiece.NONE;
+			}  //if: Human attack
+			
+			//Checks if the COMPUTER's move is an attack
+			if(player == Player.COMPUTER &&
+					( positions[move[3]+1][move[2]] == GamePiece.HUMAN_KING || 
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_NINJA ||
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_SAMURAI ||
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_NINJA  ||
+					  positions[move[3]+1][move[2]] == GamePiece.HUMAN_SAMURAI )) {
+	//			System.out.println("HI-YA!!!!!!");
+				//Sets gameOver to true if the COMPUTER attacks the King
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_KING) {
+					game.setGameOver(true);
+					game.setWinner(Player.COMPUTER);
+				}
+				//Sets the Ninja to Mini-Ninja
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_NINJA)
+					positions[move[3]+1][move[2]] = GamePiece.HUMAN_MINI_NINJA;
+				//Sets the Samurai to Mini-Samurai
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_SAMURAI)
+					positions[move[3]+1][move[2]] = GamePiece.HUMAN_MINI_SAMURAI;
+				//Removes the GamePiece from the Board
+				if(positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_NINJA ||
+						positions[move[3]+1][move[2]] == GamePiece.HUMAN_MINI_SAMURAI)
+					positions[move[3]+1][move[2]] = GamePiece.NONE;
+			}  //if: Computer attack
+		}  //if: within bounds
+//		System.out.println("The board has been updated.");
+	}  //minimaxupdate()
 	
 	public void displayBoard() {
 		System.out.println("\t   ----------------------------  Computer");
