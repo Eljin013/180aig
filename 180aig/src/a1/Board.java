@@ -78,11 +78,21 @@ public class Board {
 	}  //initializeBoard()
 	
 	public GamePiece[][] getPositions() {
-		return positions;
+		GamePiece[][] pos = new GamePiece[8][7];
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 7; j++) {
+				pos[i][j] = positions[i][j];
+			}
+		}
+		return pos;
 	}
 	
 	public void setPositions(GamePiece[][] pos) {
-		this.positions = pos;
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 7; j++) {
+				this.positions[i][j] = pos[i][j];
+			}
+		}
 	}
 	
 	/*
@@ -100,12 +110,13 @@ public class Board {
 						positions[i][j] == GamePiece.COMPUTER_SAMURAI) cPieces += 3;
 				if(positions[i][j] == GamePiece.HUMAN_KING) hPieces += 1;
 				if(positions[i][j] == GamePiece.HUMAN_MINI_NINJA ||
-						positions[i][j] == GamePiece.HUMAN_MINI_SAMURAI) cPieces += 2;
+						positions[i][j] == GamePiece.HUMAN_MINI_SAMURAI) hPieces += 2;
 				if(positions[i][j] == GamePiece.HUMAN_NINJA ||
-						positions[i][j] == GamePiece.HUMAN_SAMURAI) cPieces += 3;
+						positions[i][j] == GamePiece.HUMAN_SAMURAI) hPieces += 3;
 			}  //for
 		}  //for
-		return cPieces - hPieces;
+//		System.out.println(": " + (cPieces - hPieces));
+		return (cPieces - hPieces);
 	}
 	
 	public void updateBoard(int[] move, Player player) {
@@ -242,7 +253,7 @@ public class Board {
 				if(i == 6 && j == 0) System.out.print("\t 2 ");
 				if(i == 7 && j == 0) System.out.print("\t 1 ");
 				//prints out the game pieces
-				if(positions[i][j] == GamePiece.NONE) System.out.print("    ");
+				if(positions[i][j] == GamePiece.NONE) System.out.print(" -- ");
 				if(positions[i][j] == GamePiece.HUMAN_KING) System.out.print(" hK ");
 				if(positions[i][j] == GamePiece.HUMAN_NINJA) System.out.print(" hJ ");
 				if(positions[i][j] == GamePiece.HUMAN_SAMURAI) System.out.print(" hS ");
