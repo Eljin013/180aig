@@ -463,6 +463,7 @@ public class Game {
 					if(!(i-1 < 0) && b.getPositions()[i-1][j] == GamePiece.NONE)
 						hMoves = insertMove(hMoves, moveString(j, i, j, i-1));
 					//check the left square
+
 					if( !(i - 1 < 0) && !(j-1 < 0) && b.getPositions()[i][j-1] == GamePiece.NONE &&
 							( b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_KING || 
 							  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_MINI_NINJA ||
@@ -471,6 +472,7 @@ public class Game {
 							  b.getPositions()[i-1][j-1] == GamePiece.COMPUTER_SAMURAI ) )
 						hMoves = insertMove(hMoves, moveString(j, i, j-1, i));
 					//check the right square
+
 					if(!(i - 1 < 0) && !(j+1 > 6) && b.getPositions()[i][j+1] == GamePiece.NONE &&
 							( b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_KING || 
 							  b.getPositions()[i-1][j+1] == GamePiece.COMPUTER_MINI_NINJA ||
